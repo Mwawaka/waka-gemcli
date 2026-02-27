@@ -1,6 +1,6 @@
 # ✨ Simple Gemini CLI Client
 
-> A minimal, clean, and hackable Command Line Interface for interacting with Gemini on your terminal
+> A minimal, clean, and hackable Command Line Interface for interacting with Gemini on your terminal.
 
 ---
 
