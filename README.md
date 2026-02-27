@@ -1,1 +1,16 @@
-Goal: Write a Go program that will ask simple questions to ChatGPT and display its AI-looking answers
+# ✨ Simple Gemini CLI Client
+
+> A minimal, clean, and hackable Command Line Interface for interacting with Gemini on your terminal
+
+---
+
+## 🖥️ Demo
+
+```bash
+$ gemini "Tell me a programming joke"
+
+🧠 Gemini says:
+Why do programmers like dark mode? Because light attracts bugs 😂😂.
+```
+
+---
