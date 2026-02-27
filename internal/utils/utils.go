@@ -8,8 +8,6 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	"github.com/joho/godotenv"
 )
 
 type Salary struct {
@@ -130,13 +128,4 @@ func ReadStructFromFile() {
 	// }
 
 	fmt.Printf("%+v", emp)
-}
-
-func GoDot() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(os.Getenv("API_KEY"))
-
 }
