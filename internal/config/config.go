@@ -54,6 +54,7 @@ func (g *GoLoader) Load() (*Config, error) {
 		APIKey: apiKey,
 	}, nil
 }
+
 func GetConfig(cfgLoader ConfigLoader) (*Config, error) {
 	return cfgLoader.Load()
 
