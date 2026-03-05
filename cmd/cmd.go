@@ -16,11 +16,10 @@ import (
 )
 
 func Run() {
-	terminalUI := ui.NewUI()
+	terminalUI := ui.NewUI(os.Stdout, os.Stderr)
 	cfg := &config.ViperLoader{
 		FileType: ".env",
 	}
-
 	c, err := cfg.Load()
 	ctx := context.Background()
 

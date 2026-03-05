@@ -3,7 +3,6 @@ package ui
 import (
 	"fmt"
 	"io"
-	"os"
 	"time"
 
 	"github.com/fatih/color"
@@ -14,10 +13,10 @@ type UI struct {
 	err io.Writer
 }
 
-func NewUI() *UI {
+func NewUI(out, err io.Writer) *UI {
 	return &UI{
-		out: os.Stdout,
-		err: os.Stderr,
+		out: out,
+		err: err,
 	}
 }
 

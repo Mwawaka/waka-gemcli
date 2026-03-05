@@ -17,4 +17,6 @@ clean:
 	rm -rf bin/
 tidy:
 	go mod tidy
+test:
+	go test ./...
 	
