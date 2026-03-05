@@ -24,13 +24,13 @@ func NewUI() *UI {
 // PrintPrompt prints the styled  ~> prompt
 func (u *UI) PrintPrompt() {
 	neonGreen := color.RGB(57, 255, 20).FprintFunc()
-	neonGreen(u.out, "⚡GEMCLI ~> ")
+	neonGreen(u.out, "⚡GemCLI ~> ")
 
 }
 
 // PrintResponse prints the response and adds typing animation
 func (u *UI) PrintResponse(response string, delay time.Duration) {
-	response = fmt.Sprintf("\n🧠 Gemcli says:\n%s\n", response)
+	response = fmt.Sprintf("\n🧠 GemCLI says:\n%s\n", response)
 	success := color.New(color.FgCyan).FprintFunc()
 
 	for _, c := range response {
