@@ -9,9 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Mwawaka/go-crazy/internal/config"
-	"github.com/Mwawaka/go-crazy/internal/ui"
-
+	"github.com/Mwawaka/waka-gemcli/internal/config"
+	"github.com/Mwawaka/waka-gemcli/internal/ui"
 	"google.golang.org/genai"
 )
 

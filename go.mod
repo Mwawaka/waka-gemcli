@@ -1,4 +1,4 @@
-module github.com/Mwawaka/go-crazy
+module github.com/Mwawaka/waka-gemcli
 
 go 1.25.3
 
