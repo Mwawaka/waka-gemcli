@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"io"
+	"text/tabwriter"
 	"time"
 
 	"github.com/fatih/color"
@@ -23,7 +24,7 @@ func NewUI(out, err io.Writer) *UI {
 // PrintPrompt prints the styled  ~> prompt
 func (u *UI) PrintPrompt() {
 	neonGreen := color.RGB(57, 255, 20).FprintFunc()
-	neonGreen(u.out, "⚡GemCLI ~> ")
+	neonGreen(u.out, "\n⚡GemCLI ~> ")
 }
 
 // PrintResponse prints the response and adds typing animation
@@ -57,4 +58,22 @@ func (u *UI) Start() {
 	magenta := color.New(color.FgMagenta).FprintlnFunc()
 	magenta(u.out, "Welcome to ")
 	magenta(u.out, logo)
+}
+
+// PrintHelp prints supported commands and their descriptions
+
+func (u *UI) PrintHelp() {
+	neonGreen := color.RGB(57, 255, 20).FprintlnFunc()
+	w := tabwriter.NewWriter(u.out, 0, 0, 3, ' ', 0)
+	neonGreen(w, "COMMAND\tDESCRIPTION\n")
+	neonGreen(w, "!clear\t Resets the chat history")
+	neonGreen(w, "!exit\t Terminates the cli")
+	neonGreen(w, "!help\t Displays the command table")
+	w.Flush() //Prints the formatted table
+}
+
+// PrintInvalidInput notifies user that a command is not supported
+func (u *UI) PrintInvalidInput(command string) {
+	yellow := color.New(color.FgYellow).FprintfFunc()
+	yellow(u.out, "[UNKNOWN] %s is not a valid command. Type !help for available commands\n", command)
 }

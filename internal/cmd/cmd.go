@@ -3,7 +3,6 @@ package cmd
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -54,6 +53,7 @@ func Run() {
 	terminalUI.Start()
 	reader := bufio.NewReader(os.Stdin)
 
+loop:
 	for {
 		terminalUI.PrintPrompt()
 		input, err := reader.ReadString('\n')
@@ -73,11 +73,10 @@ func Run() {
 		}
 
 		if strings.HasPrefix(formattedInput, "!") {
-			if formattedInput == "!exit" {
-				break
-			}
-
-			if formattedInput == "!clear" {
+			switch formattedInput {
+			case "!exit":
+				break loop
+			case "!clear":
 				newChat, err := client.Chats.Create(
 					ctx,
 					c.Model,
@@ -90,8 +89,13 @@ func Run() {
 					continue
 				}
 				chat = newChat
-				continue
+
+			case "!help":
+				terminalUI.PrintHelp()
+			default:
+				terminalUI.PrintInvalidInput(formattedInput)
 			}
+			continue
 		}
 
 		output, err := makeRequest(ctx, formattedInput, chat)
@@ -107,13 +111,14 @@ func Run() {
 }
 
 func makeRequest(ctx context.Context, prompt string, chat *genai.Chat) (string, error) {
-	result, err := chat.SendMessage(ctx, genai.Part{
-		Text: prompt,
-	})
+	// result, err := chat.SendMessage(ctx, genai.Part{
+	// 	Text: prompt,
+	// })
 
-	if err != nil {
-		return "", fmt.Errorf("generating content: %w", err)
-	}
+	// if err != nil {
+	// 	return "", fmt.Errorf("generating content: %w", err)
+	// }
 
-	return result.Text(), nil
+	// return result.Text(), nil
+	return "test", nil
 }

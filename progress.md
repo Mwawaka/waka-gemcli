@@ -17,3 +17,9 @@ Go concepts covered:
 ---
 
 ## Phase 2
+
+- ✅ Chat mode with conversation history via genai.Chat
+- ✅ !exit command with labeled break loop
+- ✅ !clear command with safe chat reset
+- ✅ !help command with tabwriter formatted output
+- ✅ Unknown command handling with PrintInvalidInput
