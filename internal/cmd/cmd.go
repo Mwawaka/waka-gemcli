@@ -11,7 +11,8 @@ import (
 	"time"
 
 	"github.com/Mwawaka/go-crazy/internal/config"
-	"github.com/Mwawaka/go-crazy/ui"
+	"github.com/Mwawaka/go-crazy/internal/ui"
+
 	"google.golang.org/genai"
 )
 

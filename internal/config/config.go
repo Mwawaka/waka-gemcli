@@ -31,7 +31,7 @@ func (v *ViperLoader) Load() (*Config, error) {
 		return nil, err
 	}
 
-	apiKey := viper.GetString("API_KEY")
+	apiKey := viper.GetString("GOOGLE_API_KEY")
 	model := viper.GetString("MODEL")
 
 	if apiKey == "" || model == "" {

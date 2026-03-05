@@ -28,7 +28,7 @@ func (u *UI) PrintPrompt() {
 
 // PrintResponse prints the response and adds typing animation
 func (u *UI) PrintResponse(response string, delay time.Duration) {
-	response = fmt.Sprintf("\n🧠 GemCLI says:\n%s\n", response)
+	response = fmt.Sprintf("\n🧠 GemCLI says:\n%s\n\n", response)
 	success := color.New(color.FgCyan).FprintFunc()
 
 	for _, c := range response {

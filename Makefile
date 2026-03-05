@@ -19,4 +19,5 @@ tidy:
 	go mod tidy
 test:
 	go test ./...
-	
+dev:
+	go run main.go
