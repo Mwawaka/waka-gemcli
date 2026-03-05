@@ -33,7 +33,7 @@ func (v *ViperLoader) Load() (*Config, error) {
 	apiKey := viper.GetString("API_KEY")
 
 	if apiKey == "" {
-		return nil, fmt.Errorf("missing api key")
+		return nil, fmt.Errorf("missing API key")
 	}
 	return &Config{
 		APIKey: apiKey,
@@ -48,14 +48,14 @@ func (g *GoLoader) Load() (*Config, error) {
 	apiKey := os.Getenv("API_KEY")
 
 	if apiKey == "" {
-		return nil, fmt.Errorf("missing api key")
+		return nil, fmt.Errorf("missing API key")
 	}
 	return &Config{
 		APIKey: apiKey,
 	}, nil
 }
 
-func GetConfig(cfgLoader ConfigLoader) (*Config, error) {
-	return cfgLoader.Load()
+// func GetConfig(cfgLoader ConfigLoader) (*Config, error) {
+// 	return cfgLoader.Load()
 
-}
+// }

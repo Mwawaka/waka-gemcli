@@ -13,11 +13,13 @@ import (
 	"google.golang.org/genai"
 )
 
-func Cmd() {
+func Run() {
 
-	cfg, err := config.GetConfig(&config.ViperLoader{
+	cfg := &config.ViperLoader{
 		FileType: ".env",
-	})
+	}
+
+	c, err := cfg.Load()
 	ctx := context.Background()
 
 	if err != nil {
@@ -25,7 +27,7 @@ func Cmd() {
 	}
 
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
-		APIKey:  cfg.APIKey,
+		APIKey:  c.APIKey,
 		Backend: genai.BackendGeminiAPI,
 	})
 
@@ -44,14 +46,19 @@ func Cmd() {
 				break
 			}
 			fmt.Fprintln(os.Stderr, "error reading input: ", err)
-			continue
+			break
 		}
 
 		formattedInput := strings.TrimSpace(input)
-		output, err := MakeRequest(ctx, formattedInput, client)
+
+		if formattedInput == "" {
+			continue
+		}
+
+		output, err := makeRequest(ctx, formattedInput, client)
 
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "error generating response")
+			fmt.Fprintln(os.Stderr, err)
 		}
 
 		fmt.Fprintln(os.Stdout, output)
@@ -59,7 +66,7 @@ func Cmd() {
 
 }
 
-func MakeRequest(ctx context.Context, prompt string, client *genai.Client) (string, error) {
+func makeRequest(ctx context.Context, prompt string, client *genai.Client) (string, error) {
 	result, err := client.Models.GenerateContent(
 		ctx,
 		"gemini-2.5-flash",
@@ -70,7 +77,7 @@ func MakeRequest(ctx context.Context, prompt string, client *genai.Client) (stri
 	)
 
 	if err != nil {
-		return "", nil
+		return "", fmt.Errorf("error generating content")
 	}
 
 	return result.Text(), nil
