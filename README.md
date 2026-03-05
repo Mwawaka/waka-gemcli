@@ -8,7 +8,7 @@
 ## 🖥️ Demo
 
 ```bash
-⚡GemCLI ~> "Tell me a programming joke"
+⚡ GemCLI ~> "Tell me a programming joke"
 
 🧠 GemCLI says:
 Why do programmers like dark mode? Because light attracts bugs 😂😂.
