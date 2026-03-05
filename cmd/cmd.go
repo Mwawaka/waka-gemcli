@@ -8,13 +8,15 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/Mwawaka/go-crazy/internal/config"
+	"github.com/Mwawaka/go-crazy/ui"
 	"google.golang.org/genai"
 )
 
 func Run() {
-
+	terminalUI := ui.NewUI()
 	cfg := &config.ViperLoader{
 		FileType: ".env",
 	}
@@ -35,17 +37,18 @@ func Run() {
 		log.Fatal(err)
 	}
 
+	terminalUI.Start()
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Print("$ gemini ")
+		terminalUI.PrintPrompt()
 		input, err := reader.ReadString('\n')
 
 		if err != nil {
 			if err == io.EOF {
 				break
 			}
-			fmt.Fprintln(os.Stderr, "error reading input: ", err)
+			terminalUI.PrintError(err)
 			break
 		}
 
@@ -55,21 +58,22 @@ func Run() {
 			continue
 		}
 
-		output, err := makeRequest(ctx, formattedInput, client)
+		output, err := makeRequest(ctx, formattedInput, client, c)
 
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			terminalUI.PrintError(err)
+			continue
 		}
 
-		fmt.Fprintln(os.Stdout, output)
+		terminalUI.PrintResponse(output, 30*time.Millisecond)
 	}
 
 }
 
-func makeRequest(ctx context.Context, prompt string, client *genai.Client) (string, error) {
+func makeRequest(ctx context.Context, prompt string, client *genai.Client, c *config.Config) (string, error) {
 	result, err := client.Models.GenerateContent(
 		ctx,
-		"gemini-2.5-flash",
+		c.Model,
 		genai.Text(prompt),
 		&genai.GenerateContentConfig{
 			// MaxOutputTokens: 8000, // Limits how many tokens the model can return in a single response
@@ -77,12 +81,8 @@ func makeRequest(ctx context.Context, prompt string, client *genai.Client) (stri
 	)
 
 	if err != nil {
-		return "", fmt.Errorf("error generating content")
+		return "", fmt.Errorf("generating content: %w", err)
 	}
 
 	return result.Text(), nil
-}
-
-func GetUserInput() {
-
 }

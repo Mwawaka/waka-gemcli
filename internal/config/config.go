@@ -14,6 +14,7 @@ type ConfigLoader interface {
 
 type Config struct {
 	APIKey string
+	Model  string
 }
 
 type ViperLoader struct {
@@ -31,12 +32,14 @@ func (v *ViperLoader) Load() (*Config, error) {
 	}
 
 	apiKey := viper.GetString("API_KEY")
+	model := viper.GetString("MODEL")
 
-	if apiKey == "" {
-		return nil, fmt.Errorf("missing API key")
+	if apiKey == "" || model == "" {
+		return nil, fmt.Errorf("missing env variables")
 	}
 	return &Config{
 		APIKey: apiKey,
+		Model:  model,
 	}, nil
 }
 
@@ -46,16 +49,13 @@ func (g *GoLoader) Load() (*Config, error) {
 	}
 
 	apiKey := os.Getenv("API_KEY")
+	model := viper.GetString("MODEL")
 
-	if apiKey == "" {
+	if apiKey == "" || model == "" {
 		return nil, fmt.Errorf("missing API key")
 	}
 	return &Config{
 		APIKey: apiKey,
+		Model:  model,
 	}, nil
 }
-
-// func GetConfig(cfgLoader ConfigLoader) (*Config, error) {
-// 	return cfgLoader.Load()
-
-// }
