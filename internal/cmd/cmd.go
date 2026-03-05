@@ -17,6 +17,7 @@ import (
 )
 
 func Run() {
+	var chat *genai.Chat
 	terminalUI := ui.NewUI(os.Stdout, os.Stderr)
 	cfg := &config.ViperLoader{
 		FileType: ".env",
@@ -37,7 +38,7 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	chat, err := client.Chats.Create(
+	chat, err = client.Chats.Create(
 		ctx,
 		c.Model,
 		&genai.GenerateContentConfig{
@@ -69,6 +70,28 @@ func Run() {
 
 		if formattedInput == "" {
 			continue
+		}
+
+		if strings.HasPrefix(formattedInput, "!") {
+			if formattedInput == "!exit" {
+				break
+			}
+
+			if formattedInput == "!clear" {
+				newChat, err := client.Chats.Create(
+					ctx,
+					c.Model,
+					&genai.GenerateContentConfig{},
+					nil,
+				)
+
+				if err != nil {
+					terminalUI.PrintError(err)
+					continue
+				}
+				chat = newChat
+				continue
+			}
 		}
 
 		output, err := makeRequest(ctx, formattedInput, chat)
