@@ -3,9 +3,11 @@ package utils
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -128,4 +130,37 @@ func ReadStructFromFile() {
 	// }
 
 	fmt.Printf("%+v", emp)
+}
+
+func Server() {
+	errChan := make(chan error)
+	// A goroutine which starts a HTTP server
+	go func(channel chan error) {
+		mux := http.NewServeMux()
+
+		mux.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Printf("server: %s\n", r.Method)
+		})
+
+		server := http.Server{
+			Addr:    fmt.Sprintf(":%d", 3000),
+			Handler: mux,
+		}
+		fmt.Println("starting the server on port: 3000 ")
+		if err := server.ListenAndServe(); err != nil {
+			if !errors.Is(err, http.ErrServerClosed) {
+				fmt.Printf("error running http server: %s\n", err)
+				channel <- err
+			} else {
+				fmt.Println("shutting down the server")
+				channel <- nil
+			}
+		}
+	}(errChan)
+
+	err := <-errChan
+
+	if err != nil {
+		fmt.Println(err)
+	}
 }
