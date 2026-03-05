@@ -48,7 +48,7 @@ func (g *GoLoader) Load() (*Config, error) {
 		return nil, err
 	}
 
-	apiKey := os.Getenv("API_KEY")
+	apiKey := os.Getenv("GOOGLE_API_KEY")
 	model := viper.GetString("MODEL")
 
 	if apiKey == "" || model == "" {

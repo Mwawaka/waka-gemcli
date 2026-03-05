@@ -36,6 +36,19 @@ func Run() {
 		log.Fatal(err)
 	}
 
+	chat, err := client.Chats.Create(
+		ctx,
+		c.Model,
+		&genai.GenerateContentConfig{
+			// MaxOutputTokens: 8000, // Limits how many tokens the model can return in a single response
+		},
+		nil, // should pass history later
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	terminalUI.Start()
 	reader := bufio.NewReader(os.Stdin)
 
@@ -57,7 +70,7 @@ func Run() {
 			continue
 		}
 
-		output, err := makeRequest(ctx, formattedInput, client, c)
+		output, err := makeRequest(ctx, formattedInput, chat)
 
 		if err != nil {
 			terminalUI.PrintError(err)
@@ -69,15 +82,10 @@ func Run() {
 
 }
 
-func makeRequest(ctx context.Context, prompt string, client *genai.Client, c *config.Config) (string, error) {
-	result, err := client.Models.GenerateContent(
-		ctx,
-		c.Model,
-		genai.Text(prompt),
-		&genai.GenerateContentConfig{
-			// MaxOutputTokens: 8000, // Limits how many tokens the model can return in a single response
-		},
-	)
+func makeRequest(ctx context.Context, prompt string, chat *genai.Chat) (string, error) {
+	result, err := chat.SendMessage(ctx, genai.Part{
+		Text: prompt,
+	})
 
 	if err != nil {
 		return "", fmt.Errorf("generating content: %w", err)

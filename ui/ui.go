@@ -24,7 +24,6 @@ func NewUI(out, err io.Writer) *UI {
 func (u *UI) PrintPrompt() {
 	neonGreen := color.RGB(57, 255, 20).FprintFunc()
 	neonGreen(u.out, "⚡GemCLI ~> ")
-
 }
 
 // PrintResponse prints the response and adds typing animation
@@ -42,7 +41,6 @@ func (u *UI) PrintResponse(response string, delay time.Duration) {
 // PrintError prints errors in a stylized format
 func (u *UI) PrintError(err error) {
 	failure := color.New(color.FgRed).FprintfFunc()
-
 	failure(u.err, "[ERROR] an error occurred: <%v>\n", err)
 }
 
