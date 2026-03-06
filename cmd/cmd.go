@@ -3,7 +3,6 @@ package cmd
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -14,7 +13,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func Run() {
+func run() {
 	var chat *genai.Chat
 	terminalUI := ui.NewUI(os.Stdout, os.Stderr)
 	cfg := &config.ViperLoader{
@@ -111,22 +110,3 @@ loop:
 	}
 
 }
-
-func makeRequest(ctx context.Context, prompt string, chat *genai.Chat, onChunk func(string)) error {
-	chatIter := chat.SendMessageStream(ctx, genai.Part{
-		Text: prompt,
-	})
-
-	for result, err := range chatIter {
-		if err != nil {
-			return fmt.Errorf("generating content: %w", err)
-		}
-
-		onChunk(result.Text())
-	}
-
-	return nil
-
-}
-
-

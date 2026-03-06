@@ -1,8 +1,8 @@
 package main
 
-import "github.com/Mwawaka/waka-gemcli/internal/cmd"
+import "github.com/Mwawaka/waka-gemcli/cmd"
 
 func main() {
-	cmd.Run()
+	cmd.Execute()
 
 }
