@@ -23,3 +23,27 @@ Go concepts covered:
 - ✅ !clear command with safe chat reset
 - ✅ !help command with tabwriter formatted output
 - ✅ Unknown command handling with PrintInvalidInput
+
+## Phase 3 complete:
+
+- ✅ Replaced SendMessage with SendMessageStream
+- ✅ Callback pattern for chunk processing
+- ✅ PrintChunk replaces PrintResponse
+- ✅ Removed artificial typing animation — streaming provides natural flow
+- ✅ Tests updated
+
+### Go concepts covered in Phase 3:
+
+- Iterators iter.Seq2 introduced in Go 1.23
+- Callback functions as parameters
+- Streaming vs buffered responses
+- Removing code that no longer serves a purpose
+
+```go
+// chat.go
+func init() {
+    rootCmd.AddCommand(chatCmd)
+    chatCmd.Flags().StringVar(&model, "model", "gemini-2.5-flash", "model to use")
+}
+
+```

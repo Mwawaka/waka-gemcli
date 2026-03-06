@@ -1,10 +1,8 @@
 package ui
 
 import (
-	"fmt"
 	"io"
 	"text/tabwriter"
-	"time"
 
 	"github.com/fatih/color"
 )
@@ -27,16 +25,10 @@ func (u *UI) PrintPrompt() {
 	neonGreen(u.out, "\n⚡GemCLI ~> ")
 }
 
-// PrintResponse prints the response and adds typing animation
-func (u *UI) PrintResponse(response string, delay time.Duration) {
-	response = fmt.Sprintf("\n🧠 GemCLI says:\n%s\n\n", response)
-	success := color.New(color.FgCyan).FprintFunc()
-
-	for _, c := range response {
-		success(u.out, string(c))
-		time.Sleep(delay)
-	}
-
+// PrintChunk prints streamed tokens
+func (u *UI) PrintChunk(chunk string) {
+	response := color.New(color.FgCyan).FprintFunc()
+	response(u.out, chunk)
 }
 
 // PrintError prints errors in a stylized format

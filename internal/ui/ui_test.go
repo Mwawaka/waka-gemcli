@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 	"testing"
-	"time"
 )
 
 func Test_PrintError(t *testing.T) {
@@ -21,13 +20,12 @@ func Test_PrintError(t *testing.T) {
 	}
 }
 
-func Test_PrintResponse(t *testing.T) {
+func Test_PrintChunk(t *testing.T) {
 	buf := &bytes.Buffer{}
 	terminalUi := NewUI(buf, os.Stderr)
-	response := "This is the correct response"
-	expectedText := fmt.Sprintf("\n🧠 GemCLI says:\n%s\n\n", "This is the correct response")
-	terminalUi.PrintResponse(response, time.Microsecond)
-	if !strings.Contains(buf.String(), expectedText) {
-		t.Errorf("expected output to contain %q, got %q", expectedText, buf.String())
+	chunk := "This is the correct response"
+	terminalUi.PrintChunk(chunk)
+	if !strings.Contains(buf.String(), chunk) {
+		t.Errorf("expected output to contain %q, got %q", chunk, buf.String())
 	}
 }

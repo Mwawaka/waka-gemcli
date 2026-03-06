@@ -10,6 +10,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/fatih/color"
 )
 
 type Salary struct {
@@ -162,5 +165,15 @@ func Server() {
 
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+// PrintResponse prints the response and adds typing animation
+func PrintResponse(response string, delay time.Duration) {
+	success := color.New(color.FgCyan).FprintFunc()
+
+	for _, c := range response {
+		success(os.Stdout, string(c))
+		time.Sleep(delay)
 	}
 }

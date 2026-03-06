@@ -3,11 +3,11 @@ package cmd
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/Mwawaka/waka-gemcli/internal/config"
 	"github.com/Mwawaka/waka-gemcli/internal/ui"
@@ -97,27 +97,36 @@ loop:
 			continue
 		}
 
-		output, err := makeRequest(ctx, formattedInput, chat)
+		terminalUI.PrintChunk("\n🧠 GemCLI says:\n\n")
+
+		err = makeRequest(ctx, formattedInput, chat, terminalUI.PrintChunk)
 
 		if err != nil {
 			terminalUI.PrintError(err)
 			continue
 		}
 
-		terminalUI.PrintResponse(output, 30*time.Millisecond)
+		terminalUI.PrintChunk("\n")
+
 	}
 
 }
 
-func makeRequest(ctx context.Context, prompt string, chat *genai.Chat) (string, error) {
-	// result, err := chat.SendMessage(ctx, genai.Part{
-	// 	Text: prompt,
-	// })
+func makeRequest(ctx context.Context, prompt string, chat *genai.Chat, onChunk func(string)) error {
+	chatIter := chat.SendMessageStream(ctx, genai.Part{
+		Text: prompt,
+	})
 
-	// if err != nil {
-	// 	return "", fmt.Errorf("generating content: %w", err)
-	// }
+	for result, err := range chatIter {
+		if err != nil {
+			return fmt.Errorf("generating content: %w", err)
+		}
 
-	// return result.Text(), nil
-	return "test", nil
+		onChunk(result.Text())
+	}
+
+	return nil
+
 }
+
+
