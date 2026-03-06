@@ -114,7 +114,7 @@ func makeRequest(ctx context.Context, prompt string, chat *genai.Chat, onChunk f
 	for result, err := range chatIterator {
 		if err != nil {
 			if errors.As(err, &apiErr) {
-				return fmt.Errorf("\nCode: %d\nMessage:%s", apiErr.Code, apiErr.Message)
+				return fmt.Errorf("\nCode: %d\n\nStatus: %s\n\nMessage: %s", apiErr.Code, apiErr.Status, apiErr.Message)
 			} else {
 				return fmt.Errorf("generating content: %w", err)
 			}
