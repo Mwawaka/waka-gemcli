@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -19,9 +20,14 @@ var chatCmd = &cobra.Command{
 	Long:  "Start a cyberpunk styled  interactive chat session with Gemini. Maintains conversation history across messages. Type !help for available commands",
 	Run: func(cmd *cobra.Command, args []string) {
 		terminalUI := ui.NewUI(os.Stdout, os.Stderr)
+
+		if model == "" {
+			model = cfg.Model
+		}
+
 		chat, err := client.Chats.Create(
 			ctx,
-			cfg.Model,
+			model,
 			&genai.GenerateContentConfig{
 				//
 			},
@@ -63,7 +69,7 @@ var chatCmd = &cobra.Command{
 				case "!clear":
 					newChat, err := client.Chats.Create(
 						ctx,
-						cfg.Model,
+						model,
 						&genai.GenerateContentConfig{},
 						nil,
 					)
@@ -100,13 +106,18 @@ func init() {
 }
 
 func makeRequest(ctx context.Context, prompt string, chat *genai.Chat, onChunk func(string)) error {
+	var apiErr genai.APIError
 	chatIterator := chat.SendMessageStream(ctx, genai.Part{
 		Text: prompt,
 	})
 
 	for result, err := range chatIterator {
 		if err != nil {
-			return fmt.Errorf("generating content: %w", err)
+			if errors.As(err, &apiErr) {
+				return fmt.Errorf("\nCode: %d\nMessage:%s", apiErr.Code, apiErr.Message)
+			} else {
+				return fmt.Errorf("generating content: %w", err)
+			}
 		}
 
 		onChunk(result.Text())
