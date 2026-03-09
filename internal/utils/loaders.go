@@ -1,0 +1,61 @@
+package utils
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
+)
+
+type ConfigLoader interface {
+	Load() (*Config, error)
+}
+
+type Config struct {
+	APIKey string
+	Model  string
+}
+
+type ViperLoader struct {
+	FileType string
+}
+
+type GoLoader struct {
+}
+
+func (v *ViperLoader) Load() (*Config, error) {
+	viper.SetConfigFile(v.FileType)
+
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
+	apiKey := viper.GetString("GOOGLE_API_KEY")
+	model := viper.GetString("MODEL")
+
+	if apiKey == "" || model == "" {
+		return nil, fmt.Errorf("missing env variables")
+	}
+	return &Config{
+		APIKey: apiKey,
+		Model:  model,
+	}, nil
+}
+
+func (g *GoLoader) Load() (*Config, error) {
+	if err := godotenv.Load(); err != nil {
+		return nil, err
+	}
+
+	apiKey := os.Getenv("GOOGLE_API_KEY")
+	model := viper.GetString("MODEL")
+
+	if apiKey == "" || model == "" {
+		return nil, fmt.Errorf("missing API key")
+	}
+	return &Config{
+		APIKey: apiKey,
+		Model:  model,
+	}, nil
+}

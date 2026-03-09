@@ -22,9 +22,12 @@ var (
 		Long:  "GemCLI is a cyberpunk sytled command line interface for interacting with Google Gemini directly from your terminal. No browser. No UI. Just you, the terminal, and the AI.",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			var err error
-			loader := &config.ViperLoader{
-				FileType: ".env",
+			loader, err := config.NewViperLoader()
+
+			if err != nil {
+				return err
 			}
+			
 			cfg, err = loader.Load()
 			ctx = context.Background()
 

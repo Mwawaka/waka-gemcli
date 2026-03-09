@@ -38,3 +38,17 @@ Go concepts covered:
 - Callback functions as parameters
 - Streaming vs buffered responses
 - Removing code that no longer serves a purpose
+
+## Phase 4 — Cobra rebuild complete:
+
+- ✅ Project restructured with Cobra
+- ✅ rootCmd with PersistentPreRunE for shared client/config initialisation
+- ✅ chatCmd with full chat loop, streaming, and commands
+- ✅ models list with tabwriter formatted output
+- ✅ API error handling with errors.As
+- ✅ --model persistent flag with config fallback
+
+- Key cobra concepts covered in phase 4 https://docs.google.com/document/d/17R70SuUJC8udPt0YT5auKJo2Fo6OgAQgi8OvUmDM0r0/edit?tab=t.0#heading=h.7bcx6zhlmoxq
+
+```go
+```

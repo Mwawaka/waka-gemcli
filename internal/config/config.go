@@ -3,14 +3,10 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
-	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
-
-type ConfigLoader interface {
-	Load() (*Config, error)
-}
 
 type Config struct {
 	APIKey string
@@ -18,15 +14,28 @@ type Config struct {
 }
 
 type ViperLoader struct {
-	FileType string
+	configPath string
 }
 
-type GoLoader struct {
+func NewViperLoader() (*ViperLoader, error) {
+	var viperLoader ViperLoader
+	home, err := os.UserHomeDir()
+
+	if err != nil {
+		return nil, fmt.Errorf("couldn't find home directory: %w", err)
+	}
+
+	viperLoader.configPath = filepath.Join(home, ".config", "gemcli", "config.yaml")
+	viperLoader.configure()
+
+	return &viperLoader, nil
+
+}
+func (v *ViperLoader) configure() {
+	viper.SetConfigFile(v.configPath)
 }
 
 func (v *ViperLoader) Load() (*Config, error) {
-	viper.SetConfigFile(v.FileType)
-
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
 	}
@@ -35,7 +44,7 @@ func (v *ViperLoader) Load() (*Config, error) {
 	model := viper.GetString("MODEL")
 
 	if apiKey == "" || model == "" {
-		return nil, fmt.Errorf("missing env variables")
+		return nil, fmt.Errorf("missing configuration variables")
 	}
 	return &Config{
 		APIKey: apiKey,
@@ -43,19 +52,28 @@ func (v *ViperLoader) Load() (*Config, error) {
 	}, nil
 }
 
-func (g *GoLoader) Load() (*Config, error) {
-	if err := godotenv.Load(); err != nil {
-		return nil, err
+func (v *ViperLoader) Set(key, value string) error {
+	dir := filepath.Dir(v.configPath)
+
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("creating config directory: %w", err)
 	}
 
-	apiKey := os.Getenv("GOOGLE_API_KEY")
-	model := viper.GetString("MODEL")
+	viper.Set(key, value)
 
-	if apiKey == "" || model == "" {
-		return nil, fmt.Errorf("missing API key")
+	if err := viper.WriteConfig(); err != nil {
+		if err := viper.SafeWriteConfig(); err != nil {
+			return err
+		}
 	}
-	return &Config{
-		APIKey: apiKey,
-		Model:  model,
-	}, nil
+
+	return nil
+}
+
+func (v *ViperLoader) Get(key string) (string, error) {
+	if err := viper.ReadInConfig(); err != nil {
+		return "", fmt.Errorf("reading configuration: %w", err)
+	}
+
+	return viper.GetString(key), nil
 }
