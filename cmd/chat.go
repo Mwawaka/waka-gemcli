@@ -114,10 +114,10 @@ func makeRequest(ctx context.Context, prompt string, chat *genai.Chat, onChunk f
 	for result, err := range chatIterator {
 		if err != nil {
 			if errors.As(err, &apiErr) {
-				return fmt.Errorf("\nCode: %d\n\nStatus: %s\n\nMessage: %s", apiErr.Code, apiErr.Status, apiErr.Message)
-			} else {
-				return fmt.Errorf("generating content: %w", err)
+				return fmt.Errorf("\n[%d %s] request failed - check your quota and retry shortly\n", apiErr.Code, apiErr.Status)
 			}
+
+			return fmt.Errorf("generating content: %w", err)
 		}
 
 		onChunk(result.Text())

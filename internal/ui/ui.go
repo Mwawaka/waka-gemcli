@@ -5,6 +5,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/fatih/color"
+	"google.golang.org/genai"
 )
 
 type UI struct {
@@ -68,4 +69,23 @@ func (u *UI) PrintHelp() {
 func (u *UI) PrintInvalidInput(command string) {
 	yellow := color.New(color.FgYellow).FprintfFunc()
 	yellow(u.out, "[UNKNOWN] %s is not a valid command. Type !help for available commands\n", command)
+}
+
+// PrintModelInfo prints details about all available models
+func (u *UI) PrintModelInfo(models []*genai.Model) {
+	var desc string
+	neonGreen := color.RGB(57, 255, 20).FprintfFunc()
+	w := tabwriter.NewWriter(u.out, 0, 0, 4, ' ', 0)
+	neonGreen(w, "Name\tVersion\tThinking\tDescription\n")
+	neonGreen(w, "----\t-------\t--------\t-----------\n")
+
+	for _, model := range models {
+		desc = model.Description
+		if len(desc) > 100 {
+			desc = desc[:100] + "..."
+		}
+		neonGreen(w, "%s\t%s\t%t\t%s\n", model.Name, model.Version, model.Thinking, desc)
+	}
+
+	w.Flush()
 }
