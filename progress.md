@@ -54,10 +54,13 @@ Go concepts covered:
 - ✅ rootCmd with PersistentPreRunE
 - ✅ Shared package-level variables
 - ✅ First run interactive setup
-- ✅ Sentinel error pattern
-- ✅ ~/.config/gemcli/config.yaml config file
+- ✅ First Run interactive setup with Sentinel error pattern
+- ✅ ~/.config/gemcli/config.yaml config file persistence
 - ✅ chatCmd with full chat loop and streaming
 - ✅ models list with tabwriter table
 - ✅ --model persistent flag with config fallback
 ```go
 ```
+## Phase 6 
+- ✅ config set and get implementation
+- ✅ models select with interactive promptui selector

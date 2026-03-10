@@ -18,6 +18,7 @@ var (
 	cfg        *config.Config
 	ctx        context.Context
 	terminalUI *ui.UI
+	loader     *config.ViperLoader
 
 	rootCmd = &cobra.Command{
 		Use:   "gemcli",
@@ -26,7 +27,7 @@ var (
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			var err error
 			terminalUI = ui.NewUI(os.Stdin, os.Stdout, os.Stderr)
-			loader, err := config.NewViperLoader()
+			loader, err = config.NewViperLoader()
 
 			if err != nil {
 				return err

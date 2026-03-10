@@ -1,12 +1,28 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
+
+	"github.com/spf13/cobra"
+)
 
 var setCmd = &cobra.Command{
 	Use:   "set",
 	Short: "",
 	Long:  "",
-	Run:   func(cmd *cobra.Command, args []string) {},
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) != 2 {
+			terminalUI.PrintError(fmt.Errorf("invalid number of arguments"))
+			return
+		}
+
+		if err := loader.Set(args[0], args[1]); err != nil {
+			terminalUI.PrintError(err)
+			return
+		}
+
+		terminalUI.PrintChunk(fmt.Sprintf("\n✅ %s updated successfully\n", args[0]))
+	},
 }
 
 func init() {
