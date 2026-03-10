@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 
 	"github.com/Mwawaka/waka-gemcli/internal/config"
@@ -38,13 +37,23 @@ var (
 
 			if err != nil {
 				if errors.Is(err, config.ErrConfigNotFound) {
-					apiKey, err := terminalUI.PrintFirstSetup()
+					cfg, err = terminalUI.PromptInitialConfig()
+
 					if err != nil {
 						return err
 					}
-					fmt.Println(apiKey)
+
+					if err = loader.Set("GOOGLE_API_KEY", cfg.APIKey); err != nil {
+						return err
+					}
+
+					if err = loader.Set("MODEL", cfg.Model); err != nil {
+						return err
+					}
+
+				} else {
+					return err
 				}
-				return err
 			}
 
 			client, err = genai.NewClient(ctx, &genai.ClientConfig{

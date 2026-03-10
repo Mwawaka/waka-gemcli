@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"google.golang.org/genai"
 )
 
 var listCmd = &cobra.Command{
@@ -10,14 +9,12 @@ var listCmd = &cobra.Command{
 	Short: "List available Gemini models",
 	Long:  "Fetch and display all available Gemini models from the API.",
 	Run: func(cmd *cobra.Command, args []string) {
-		var models []*genai.Model
 
-		for model, err := range client.Models.All(ctx) {
-			if err != nil {
-				terminalUI.PrintError(err)
-				return
-			}
-			models = append(models, model)
+		models, err := fetchModels()
+
+		if err != nil {
+			terminalUI.PrintError(err)
+			return
 		}
 
 		terminalUI.PrintModelInfo(models)

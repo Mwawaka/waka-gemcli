@@ -1,6 +1,12 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"errors"
+	"fmt"
+
+	"github.com/spf13/cobra"
+	"google.golang.org/genai"
+)
 
 var modelsCmd = &cobra.Command{
 	Use:   "models",
@@ -13,4 +19,22 @@ var modelsCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(modelsCmd)
+}
+
+func fetchModels() ([]*genai.Model, error) {
+	var models []*genai.Model
+	var apiErr genai.APIError
+
+	for model, err := range client.Models.All(ctx) {
+		if err != nil {
+			if errors.As(err, &apiErr) {
+				return nil, fmt.Errorf("\n[%d %s] request failed - %s", apiErr.Code, apiErr.Status, apiErr.Message)
+			}
+			return nil, err
+		}
+
+		models = append(models, model)
+	}
+
+	return models, nil
 }

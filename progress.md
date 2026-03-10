@@ -50,5 +50,14 @@ Go concepts covered:
 
 - Key cobra concepts covered in phase 4 https://docs.google.com/document/d/17R70SuUJC8udPt0YT5auKJo2Fo6OgAQgi8OvUmDM0r0/edit?tab=t.0#heading=h.7bcx6zhlmoxq
 
+## Phase 5 — Viper Integration Complete:
+- ✅ rootCmd with PersistentPreRunE
+- ✅ Shared package-level variables
+- ✅ First run interactive setup
+- ✅ Sentinel error pattern
+- ✅ ~/.config/gemcli/config.yaml config file
+- ✅ chatCmd with full chat loop and streaming
+- ✅ models list with tabwriter table
+- ✅ --model persistent flag with config fallback
 ```go
 ```

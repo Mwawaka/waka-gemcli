@@ -6,6 +6,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	"github.com/Mwawaka/waka-gemcli/internal/config"
 	"github.com/fatih/color"
 	"google.golang.org/genai"
 )
@@ -94,18 +95,31 @@ func (u *UI) PrintModelInfo(models []*genai.Model) {
 	w.Flush()
 }
 
-func (u *UI) PrintFirstSetup() (string, error) {
+// PromptInitialConfig guides the user through initial configuration by collecting their API key and model preference
+func (u *UI) PromptInitialConfig() (*config.Config, error) {
 	reader := bufio.NewReader(u.in)
 	magenta := color.New(color.FgMagenta).FprintlnFunc()
 	u.Start()
-	magenta(u.out, "No config found. Let's get you set up!")
+	magenta(u.out, "\nNo config found. Let's get you set up!")
 	magenta(u.out, "Enter your API key:")
-	input, err := reader.ReadString('\n')
+	firstInput, err := reader.ReadString('\n')
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	magenta(u.out, "Enter your preffered model (default: gemini-2.5-flash):")
-	formattedInput := strings.TrimSpace(input)
-	return formattedInput,nil
+	secondInput, err := reader.ReadString('\n')
+	if err != nil {
+		return nil, err
+	}
+	model := strings.TrimSpace(secondInput)
+
+	if model == "" {
+		model = "gemini-2.5-flash"
+	}
+
+	return &config.Config{
+		APIKey: strings.TrimSpace(firstInput),
+		Model:  model,
+	}, nil
 
 }
