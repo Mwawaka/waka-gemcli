@@ -1,12 +1,16 @@
 package config
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 
 	"github.com/spf13/viper"
 )
+
+var ErrConfigNotFound = fmt.Errorf("config file not found")
 
 type Config struct {
 	APIKey string
@@ -36,7 +40,12 @@ func (v *ViperLoader) configure() {
 }
 
 func (v *ViperLoader) Load() (*Config, error) {
+	var pathErr *fs.PathError
+
 	if err := viper.ReadInConfig(); err != nil {
+		if errors.As(err, &pathErr) {
+			return nil, ErrConfigNotFound
+		}
 		return nil, err
 	}
 

@@ -1,7 +1,9 @@
 package ui
 
 import (
+	"bufio"
 	"io"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/fatih/color"
@@ -9,12 +11,14 @@ import (
 )
 
 type UI struct {
+	in  io.Reader
 	out io.Writer
 	err io.Writer
 }
 
-func NewUI(out, err io.Writer) *UI {
+func NewUI(in io.Reader, out, err io.Writer) *UI {
 	return &UI{
+		in:  in,
 		out: out,
 		err: err,
 	}
@@ -88,4 +92,20 @@ func (u *UI) PrintModelInfo(models []*genai.Model) {
 	}
 
 	w.Flush()
+}
+
+func (u *UI) PrintFirstSetup() (string, error) {
+	reader := bufio.NewReader(u.in)
+	magenta := color.New(color.FgMagenta).FprintlnFunc()
+	u.Start()
+	magenta(u.out, "No config found. Let's get you set up!")
+	magenta(u.out, "Enter your API key:")
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+	magenta(u.out, "Enter your preffered model (default: gemini-2.5-flash):")
+	formattedInput := strings.TrimSpace(input)
+	return formattedInput,nil
+
 }

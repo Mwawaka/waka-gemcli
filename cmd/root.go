@@ -2,19 +2,23 @@ package cmd
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 
 	"github.com/Mwawaka/waka-gemcli/internal/config"
+	"github.com/Mwawaka/waka-gemcli/internal/ui"
 	"github.com/spf13/cobra"
 	"google.golang.org/genai"
 )
 
 var (
 	// Used for flags
-	model  string
-	client *genai.Client
-	cfg    *config.Config
-	ctx    context.Context
+	model      string
+	client     *genai.Client
+	cfg        *config.Config
+	ctx        context.Context
+	terminalUI *ui.UI
 
 	rootCmd = &cobra.Command{
 		Use:   "gemcli",
@@ -22,16 +26,24 @@ var (
 		Long:  "GemCLI is a cyberpunk sytled command line interface for interacting with Google Gemini directly from your terminal. No browser. No UI. Just you, the terminal, and the AI.",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			var err error
+			terminalUI = ui.NewUI(os.Stdin, os.Stdout, os.Stderr)
 			loader, err := config.NewViperLoader()
 
 			if err != nil {
 				return err
 			}
-			
+
 			cfg, err = loader.Load()
 			ctx = context.Background()
 
 			if err != nil {
+				if errors.Is(err, config.ErrConfigNotFound) {
+					apiKey, err := terminalUI.PrintFirstSetup()
+					if err != nil {
+						return err
+					}
+					fmt.Println(apiKey)
+				}
 				return err
 			}
 

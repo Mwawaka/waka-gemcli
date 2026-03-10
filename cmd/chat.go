@@ -9,7 +9,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Mwawaka/waka-gemcli/internal/ui"
 	"github.com/spf13/cobra"
 	"google.golang.org/genai"
 )
@@ -19,8 +18,6 @@ var chatCmd = &cobra.Command{
 	Short: "Start an interactive chat session with Gemini",
 	Long:  "Start a cyberpunk styled  interactive chat session with Gemini. Maintains conversation history across messages. Type !help for available commands",
 	Run: func(cmd *cobra.Command, args []string) {
-		terminalUI := ui.NewUI(os.Stdout, os.Stderr)
-
 		if model == "" {
 			model = cfg.Model
 		}
@@ -39,7 +36,7 @@ var chatCmd = &cobra.Command{
 			return
 		}
 
-		terminalUI.Start()
+		// terminalUI.Start()
 		reader := bufio.NewReader(os.Stdin)
 
 	loop:
