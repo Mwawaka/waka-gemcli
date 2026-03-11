@@ -78,7 +78,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&model, "model", "gemini-2.5-flash", "Default Gemini model to use")
+	rootCmd.PersistentFlags().StringVarP(&model, "model", "m", "gemini-2.5-flash", "Default Gemini model to use")
 }
 
 // Cobra prints errors to stderr by default
