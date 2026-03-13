@@ -93,7 +93,7 @@ var (
 					return
 				}
 
-				if len(args[0]) == 0 {
+				if len(args) == 0 {
 					terminalUI.PrintError(fmt.Errorf("please provide a question when using piped content"))
 					return
 				}
@@ -105,6 +105,16 @@ var (
 					return
 				}
 
+				// Solving: pipe and keyboard  reading from os.Stdin
+				tty, err := os.Open("/dev/tty")
+
+				if err != nil {
+					terminalUI.PrintError(err)
+					return
+				}
+
+				defer tty.Close()
+				reader = bufio.NewReader(tty)
 			}
 
 		loop:
