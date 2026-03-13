@@ -59,8 +59,10 @@ Go concepts covered:
 - ✅ chatCmd with full chat loop and streaming
 - ✅ models list with tabwriter table
 - ✅ --model persistent flag with config fallback
-```go
-```
+
 ## Phase 6 
 - ✅ config set and get implementation
 - ✅ models select with interactive promptui selector
+- ✅ Conversation history with --resume flag
+- ✅ Signal handling for Ctrl+C
+- ✅ Piped content processing with /dev/tty fallback
