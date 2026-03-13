@@ -25,6 +25,7 @@ var (
 		Long:  "Start a cyberpunk styled  interactive chat session with Gemini. Maintains conversation history across messages. Type !help for available commands",
 		Run: func(cmd *cobra.Command, args []string) {
 			var hist []*genai.Content
+			var prompt string
 
 			if model == "" {
 				model = cfg.Model
@@ -83,7 +84,28 @@ var (
 				return
 			}
 
-			isPiped := (fileInfo.Mode() & os.ModeCharDevice) == 0
+			// 0 -piped, 1- character device
+			if (fileInfo.Mode() & os.ModeCharDevice) == 0 {
+				content, err := io.ReadAll(os.Stdin)
+
+				if err != nil {
+					terminalUI.PrintError(err)
+					return
+				}
+
+				if len(args[0]) == 0 {
+					terminalUI.PrintError(fmt.Errorf("please provide a question when using piped content"))
+					return
+				}
+
+				prompt = fmt.Sprintf("Content:\n%s\n\nQuestion: %s", content, args[0])
+
+				if err := makeRequest(ctx, prompt, chat, terminalUI.PrintChunk); err != nil {
+					terminalUI.PrintError(err)
+					return
+				}
+
+			}
 
 		loop:
 			for {
