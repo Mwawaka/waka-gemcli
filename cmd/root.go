@@ -37,6 +37,7 @@ var (
 			ctx = context.Background()
 
 			if err != nil {
+				// Checks whether it is a first run
 				if errors.Is(err, config.ErrConfigNotFound) {
 					cfg, err = terminalUI.PromptInitialConfig()
 
