@@ -8,6 +8,7 @@ import (
 
 var getCmd = &cobra.Command{
 	Use:   "get",
+	// TODO: complete description
 	Short: "",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {

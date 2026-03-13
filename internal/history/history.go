@@ -26,6 +26,7 @@ func NewHistory() (*History, error) {
 		HistoryPath: path,
 	}, nil
 }
+
 func (h *History) SaveHistory(chatHistory []*genai.Content) error {
 	dir := filepath.Dir(h.HistoryPath)
 

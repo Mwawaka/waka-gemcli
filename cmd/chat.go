@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/Mwawaka/waka-gemcli/internal/history"
 	"github.com/spf13/cobra"
@@ -60,10 +62,17 @@ var (
 
 			// terminalUI.Start()
 			reader := bufio.NewReader(os.Stdin)
+			signChan := make(chan os.Signal, 1)
+			signal.Notify(signChan, syscall.SIGINT, syscall.SIGTERM)
+
+			go func() {
+				<-signChan
+				hfg.SaveHistory(chat.History(false))
+				os.Exit(0)
+			}()
 
 		loop:
 			for {
-
 				terminalUI.PrintPrompt()
 				input, err := reader.ReadString('\n')
 
@@ -84,6 +93,10 @@ var (
 				if strings.HasPrefix(formattedInput, "!") {
 					switch formattedInput {
 					case "!exit":
+						// save comprehensive history
+						if err := hfg.SaveHistory(chat.History(false)); err != nil {
+							terminalUI.PrintError(err)
+						}
 						break loop
 					case "!clear":
 						newChat, err := client.Chats.Create(

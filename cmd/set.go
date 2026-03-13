@@ -8,6 +8,7 @@ import (
 
 var setCmd = &cobra.Command{
 	Use:   "set",
+	// TODO: write description
 	Short: "",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
