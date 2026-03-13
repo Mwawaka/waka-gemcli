@@ -46,6 +46,7 @@ var (
 				}
 
 			}
+
 			chat, err := client.Chats.Create(
 				ctx,
 				model,
@@ -60,8 +61,7 @@ var (
 				return
 			}
 
-			// terminalUI.Start()
-			reader := bufio.NewReader(os.Stdin)
+			// Handles saving history when uses CTRL + C
 			signChan := make(chan os.Signal, 1)
 			signal.Notify(signChan, syscall.SIGINT, syscall.SIGTERM)
 
@@ -72,6 +72,18 @@ var (
 				}
 				os.Exit(0)
 			}()
+
+			// terminalUI.Start()
+			reader := bufio.NewReader(os.Stdin)
+
+			// Detecting whether input is piped or from a character device(keyboard)
+			fileInfo, err := os.Stdin.Stat()
+			if err != nil {
+				terminalUI.PrintError(err)
+				return
+			}
+
+			isPiped := (fileInfo.Mode() & os.ModeCharDevice) == 0
 
 		loop:
 			for {
