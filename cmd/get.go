@@ -7,10 +7,9 @@ import (
 )
 
 var getCmd = &cobra.Command{
-	Use:   "get",
-	// TODO: complete description
-	Short: "",
-	Long:  "",
+	Use: "get",
+	Short: "Get a configuration value",
+	Long:  "Retrieve a configuration value by key from ~/.config/gemcli/config.yaml. Example: gemcli config get GOOGLE_API_KEY",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			terminalUI.PrintError(fmt.Errorf("invalid number of arguments"))
