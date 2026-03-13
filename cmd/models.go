@@ -28,7 +28,7 @@ func fetchModels() ([]*genai.Model, error) {
 	for model, err := range client.Models.All(ctx) {
 		if err != nil {
 			if errors.As(err, &apiErr) {
-				return nil, fmt.Errorf("\n[%d %s] request failed - %s", apiErr.Code, apiErr.Status, apiErr.Message)
+				return nil, fmt.Errorf("\n[%d %s] request failed - %s\n Run gemcli config set GOOGLE_API_KEY [API key] to configure your API key\n", apiErr.Code, apiErr.Status, apiErr.Message)
 			}
 			return nil, err
 		}

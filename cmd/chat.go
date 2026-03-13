@@ -67,7 +67,9 @@ var (
 
 			go func() {
 				<-signChan
-				hfg.SaveHistory(chat.History(false))
+				if err := hfg.SaveHistory(chat.History(false)); err != nil {
+					terminalUI.PrintError(err)
+				}
 				os.Exit(0)
 			}()
 
@@ -78,8 +80,15 @@ var (
 
 				if err != nil {
 					if err == io.EOF {
+						if resume {
+							if err := hfg.SaveHistory(chat.History(false)); err != nil {
+								terminalUI.PrintError(err)
+							}
+						}
+
 						break
 					}
+
 					terminalUI.PrintError(err)
 					break
 				}
@@ -103,7 +112,7 @@ var (
 							ctx,
 							model,
 							&genai.GenerateContentConfig{},
-							nil,
+							nil, //fresh start - no history
 						)
 
 						if err != nil {
