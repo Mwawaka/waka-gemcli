@@ -35,6 +35,7 @@ func NewViperLoader() (*ViperLoader, error) {
 	return &viperLoader, nil
 
 }
+
 func (v *ViperLoader) configure() {
 	viper.SetConfigFile(v.configPath)
 }
