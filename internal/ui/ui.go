@@ -106,11 +106,12 @@ func (u *UI) PromptInitialConfig() (*config.Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	magenta(u.out, "Enter your preffered model (default: gemini-2.5-flash):")
+	magenta(u.out, "Enter your preferred model (default: gemini-2.5-flash):")
 	secondInput, err := reader.ReadString('\n')
 	if err != nil {
 		return nil, err
 	}
+	apiKey := strings.TrimSpace(firstInput)
 	model := strings.TrimSpace(secondInput)
 
 	if model == "" {
@@ -118,7 +119,7 @@ func (u *UI) PromptInitialConfig() (*config.Config, error) {
 	}
 
 	return &config.Config{
-		APIKey: strings.TrimSpace(firstInput),
+		APIKey: apiKey,
 		Model:  model,
 	}, nil
 
