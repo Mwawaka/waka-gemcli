@@ -7,7 +7,7 @@ import (
 )
 
 var getCmd = &cobra.Command{
-	Use: "get",
+	Use:   "get",
 	Short: "Get a configuration value",
 	Long:  "Retrieve a configuration value by key from ~/.config/gemcli/config.yaml. Example: gemcli config get GOOGLE_API_KEY",
 	Run: func(cmd *cobra.Command, args []string) {

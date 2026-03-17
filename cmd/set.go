@@ -7,7 +7,7 @@ import (
 )
 
 var setCmd = &cobra.Command{
-	Use: "set",
+	Use:   "set",
 	Short: "Set a configuration value",
 	Long:  "Sets a configuration key-value pair in ~/.cofig/gemcli/config.yaml. Example: gemcli config set GOOGLE_API_KEY mykey",
 	Run: func(cmd *cobra.Command, args []string) {
