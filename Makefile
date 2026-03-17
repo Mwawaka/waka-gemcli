@@ -21,3 +21,5 @@ test:
 	go test ./...
 dev:
 	go run main.go
+buildc:
+	docker build -t mwawaka/gemcli:v1.0.0 .
