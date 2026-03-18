@@ -7,7 +7,7 @@ COPY go.mod go.sum /app/
 RUN go mod download
 COPY . /app
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags="-s -w -X main.version=1.0.0" -o /app/cli .
+    go build -ldflags="-s -w -X main.version=1.0.0" -o /gemcli.
 
 # === Run Stage ===
 FROM scratch
@@ -16,5 +16,5 @@ LABEL maintainer="Mwawaka" \
       description="Cyberpunk-themed Gemini CLI client"
 
 # Copies from named stage, not host machine
-COPY --from=builder /app/cli /app/cli 
-ENTRYPOINT ["/app/cli"]
+COPY --from=builder /gemcli /gemcli 
+ENTRYPOINT ["gemcli"]
