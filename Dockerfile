@@ -14,7 +14,7 @@ FROM scratch
 LABEL maintainer="Mwawaka" \ 
       version="1.0.0" \
       description="Cyberpunk-themed Gemini CLI client"
-
+ENV HOME=/root
 # Copies from named stage, not host machine
 COPY --from=builder /gemcli /gemcli 
-ENTRYPOINT ["gemcli"]
+ENTRYPOINT ["/gemcli"]

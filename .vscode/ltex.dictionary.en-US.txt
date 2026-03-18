@@ -1,3 +1,4 @@
 hackable
 PersistentPreRunE
 rootCmd
+fmt
