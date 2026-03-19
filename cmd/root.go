@@ -23,7 +23,7 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   "gemcli",
 		Short: "A cyberpunk themed Gemini CLI client",
-		Long:  "GemCLI is a cyberpunk sytled command line interface for interacting with Google Gemini directly from your terminal. No browser. No UI. Just you, the terminal, and the AI.",
+		Long:  "GemCLI is a cyberpunk styled command line interface for interacting with Google Gemini directly from your terminal. No browser. No UI. Just you, the terminal, and the AI.",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			var err error
 			terminalUI = ui.NewUI(os.Stdin, os.Stdout, os.Stderr)

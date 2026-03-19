@@ -6,12 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
 
 	"github.com/Mwawaka/waka-gemcli/internal/history"
+	"github.com/Mwawaka/waka-gemcli/internal/ui"
 	"github.com/spf13/cobra"
 	"google.golang.org/genai"
 )
@@ -41,11 +43,12 @@ var (
 			if resume {
 				hist, err = hfg.LoadHistory()
 
-				if err != nil {
+				if err != nil && !errors.Is(err, fs.ErrNotExist) {
 					terminalUI.PrintError(err)
 					return
 				}
 
+				hist = nil
 			}
 
 			chat, err := client.Chats.Create(
@@ -62,17 +65,7 @@ var (
 				return
 			}
 
-			// Handles saving history when uses CTRL + C
-			signChan := make(chan os.Signal, 1)
-			signal.Notify(signChan, syscall.SIGINT, syscall.SIGTERM)
-
-			go func() {
-				<-signChan
-				if err := hfg.SaveHistory(chat.History(false)); err != nil {
-					terminalUI.PrintError(err)
-				}
-				os.Exit(0)
-			}()
+			setupSignalHandler(hfg, chat, terminalUI)
 
 			// terminalUI.Start()
 			reader := bufio.NewReader(os.Stdin)
@@ -211,4 +204,20 @@ func makeRequest(ctx context.Context, prompt string, chat *genai.Chat, onChunk f
 	}
 
 	return nil
+}
+
+// setupSignalHandler handles saving history when the user presses CTRL + C
+func setupSignalHandler(hfg *history.History, chat *genai.Chat, ui *ui.UI) {
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-signalChan
+
+		if err := hfg.SaveHistory(chat.History(false)); err != nil {
+			ui.PrintError(err)
+		}
+
+		os.Exit(0)
+	}()
 }

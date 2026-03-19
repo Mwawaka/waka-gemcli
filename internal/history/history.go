@@ -30,11 +30,13 @@ func NewHistory() (*History, error) {
 func (h *History) SaveHistory(chatHistory []*genai.Content) error {
 	dir := filepath.Dir(h.HistoryPath)
 
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	// Hardened 0755 - 0700
+	if err := os.MkdirAll(dir, 0700); err != nil {
 		return fmt.Errorf("creating application data directory: %w", err)
 	}
 
-	file, err := os.OpenFile(h.HistoryPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	// Hardened 0644 - 0600
+	file, err := os.OpenFile(h.HistoryPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 
 	if err != nil {
 		return err

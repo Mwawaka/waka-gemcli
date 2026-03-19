@@ -21,3 +21,10 @@ test:
 	go test ./...
 dev:
 	go run main.go
+docker-build: vet tidy
+	docker build -t mwawaka/gemcli:v1.0.0 .
+docker-run:
+	docker run -it \
+	-v ~/.config/gemcli:/root/.config/gemcli \
+	-v ~/.local/share/gemcli:/root/.local/share/gemcli \
+	--name gemmy mwawaka/gemcli:v1.0.0 chat

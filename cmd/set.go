@@ -7,9 +7,9 @@ import (
 )
 
 var setCmd = &cobra.Command{
-	Use: "set",
+	Use:   "set",
 	Short: "Set a configuration value",
-	Long:  "Sets a configuration key-value pair in ~/.cofig/gemcli/config.yaml. Example: gemcli config set GOOGLE_API_KEY mykey",
+	Long:  "Sets a configuration key-value pair in ~/.config/gemcli/config.yaml. Example: gemcli config set GOOGLE_API_KEY mykey",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
 			terminalUI.PrintError(fmt.Errorf("invalid number of arguments"))
