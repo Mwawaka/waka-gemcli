@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"iter"
 	"os"
 	"os/signal"
 	"strings"
@@ -185,9 +186,13 @@ func init() {
 	chatCmd.Flags().BoolVarP(&resume, "resume", "r", false, "Resumes previous chat session")
 }
 
-func makeRequest(ctx context.Context, prompt string, chat *genai.Chat, onChunk func(string)) error {
+// type ChatSession interface {
+// 	SendMessageStream(ctx context.Context, parts ...genai.Part) iter.Seq2[*genai.GenerateContentResponse, error]
+// }
+
+func makeRequest(chatSession ChatSession, prompt string, onChunk func(string)) error {
 	var apiErr genai.APIError
-	chatIterator := chat.SendMessageStream(ctx, genai.Part{
+	chatIterator := chatSession.SendMessageStream(ctx, genai.Part{
 		Text: prompt,
 	})
 
