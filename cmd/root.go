@@ -73,6 +73,7 @@ var (
 )
 
 func Execute() {
+	// Cobra prints errors to stderr by default
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
@@ -81,5 +82,3 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&model, "model", "m", "gemini-2.5-flash", "Default Gemini model to use")
 }
-
-// Cobra prints errors to stderr by default

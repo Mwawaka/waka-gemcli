@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
-	"google.golang.org/genai"
 )
 
 type History struct {
-	HistoryPath string
+	historyPath string
 }
 
 func NewHistory() (*History, error) {
@@ -23,20 +21,20 @@ func NewHistory() (*History, error) {
 	path := filepath.Join(homeDir, ".local", "share", "gemcli", "history.json")
 
 	return &History{
-		HistoryPath: path,
+		historyPath: path,
 	}, nil
 }
 
-func (h *History) SaveHistory(chatHistory []*genai.Content) error {
-	dir := filepath.Dir(h.HistoryPath)
+func (h *History) SaveHistory(target any) error {
+	dir := filepath.Dir(h.historyPath)
 
 	// Hardened 0755 - 0700
-	if err := os.MkdirAll(dir, 0700); err != nil {
+	if err := os.MkdirAll(dir, 0755); err != nil {
 		return fmt.Errorf("creating application data directory: %w", err)
 	}
 
 	// Hardened 0644 - 0600
-	file, err := os.OpenFile(h.HistoryPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
+	file, err := os.OpenFile(h.historyPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 
 	if err != nil {
 		return err
@@ -44,26 +42,25 @@ func (h *History) SaveHistory(chatHistory []*genai.Content) error {
 
 	defer file.Close()
 
-	if err := json.NewEncoder(file).Encode(chatHistory); err != nil {
+	if err := json.NewEncoder(file).Encode(target); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (h *History) LoadHistory() ([]*genai.Content, error) {
-	var chatHistory []*genai.Content
-	file, err := os.Open(h.HistoryPath)
+func (h *History) LoadHistory(target any) error {
+	file, err := os.Open(h.historyPath)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer file.Close()
 
-	if err := json.NewDecoder(file).Decode(&chatHistory); err != nil {
-		return nil, err
+	if err := json.NewDecoder(file).Decode(target); err != nil {
+		return err
 	}
 
-	return chatHistory, nil
+	return nil
 }
