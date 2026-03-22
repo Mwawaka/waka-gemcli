@@ -63,6 +63,7 @@ func (v *ViperLoader) Load() (*Config, error) {
 }
 
 func (v *ViperLoader) Set(key, value string) error {
+	var pathErr *fs.PathError
 	dir := filepath.Dir(v.configPath)
 
 	// Hardened 0755 - 0700
@@ -73,9 +74,18 @@ func (v *ViperLoader) Set(key, value string) error {
 	viper.Set(key, value)
 
 	if err := viper.WriteConfig(); err != nil {
-		if err := viper.SafeWriteConfig(); err != nil {
+		if errors.As(err, &pathErr) {
+			if err := viper.SafeWriteConfig(); err != nil {
+				return err
+			}
+		} else {
 			return err
 		}
+	}
+
+	//Hardened from 0644(default) to 0600
+	if err := os.Chmod(v.configPath, 0600); err != nil {
+		return err
 	}
 
 	return nil
