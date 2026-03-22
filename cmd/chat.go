@@ -19,6 +19,10 @@ import (
 	"google.golang.org/genai"
 )
 
+type ChatSession interface {
+	SendMessageStream(ctx context.Context, parts ...genai.Part) iter.Seq2[*genai.GenerateContentResponse, error]
+}
+
 var (
 	resume bool
 
@@ -94,7 +98,7 @@ var (
 
 				prompt = fmt.Sprintf("Content:\n%s\n\nQuestion: %s", content, args[0])
 
-				if err := makeRequest(ctx, prompt, chat, terminalUI.PrintChunk); err != nil {
+				if err := makeRequest(ctx, chat, prompt, terminalUI.PrintChunk); err != nil {
 					terminalUI.PrintError(err)
 					return
 				}
@@ -170,7 +174,7 @@ var (
 
 				terminalUI.PrintChunk("\n🧠 GemCLI says:\n\n")
 
-				if err = makeRequest(ctx, formattedInput, chat, terminalUI.PrintChunk); err != nil {
+				if err = makeRequest(ctx, chat, formattedInput, terminalUI.PrintChunk); err != nil {
 					terminalUI.PrintError(err)
 					continue
 				}
@@ -186,11 +190,7 @@ func init() {
 	chatCmd.Flags().BoolVarP(&resume, "resume", "r", false, "Resumes previous chat session")
 }
 
-// type ChatSession interface {
-// 	SendMessageStream(ctx context.Context, parts ...genai.Part) iter.Seq2[*genai.GenerateContentResponse, error]
-// }
-
-func makeRequest(chatSession ChatSession, prompt string, onChunk func(string)) error {
+func makeRequest(ctx context.Context, chatSession ChatSession, prompt string, onChunk func(string)) error {
 	var apiErr genai.APIError
 	chatIterator := chatSession.SendMessageStream(ctx, genai.Part{
 		Text: prompt,

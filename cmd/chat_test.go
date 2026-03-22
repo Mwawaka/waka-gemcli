@@ -7,12 +7,9 @@ import (
 	"google.golang.org/genai"
 )
 
-type ChatSession interface {
-	SendMessageStream(ctx context.Context, parts ...genai.Part) iter.Seq2[*genai.GenerateContentResponse, error]
-}
 
 type MockChatSession struct {
-	response string
+	response *genai.GenerateContentResponse
 	err      error
 }
 
