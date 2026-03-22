@@ -52,8 +52,6 @@ var (
 					terminalUI.PrintError(err)
 					return
 				}
-
-				hist = nil
 			}
 
 			chat, err := client.Chats.Create(

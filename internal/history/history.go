@@ -10,7 +10,7 @@ import (
 )
 
 type History struct {
-	HistoryPath string
+	historyPath string
 }
 
 func NewHistory() (*History, error) {
@@ -23,12 +23,12 @@ func NewHistory() (*History, error) {
 	path := filepath.Join(homeDir, ".local", "share", "gemcli", "history.json")
 
 	return &History{
-		HistoryPath: path,
+		historyPath: path,
 	}, nil
 }
 
 func (h *History) SaveHistory(chatHistory []*genai.Content) error {
-	dir := filepath.Dir(h.HistoryPath)
+	dir := filepath.Dir(h.historyPath)
 
 	// Hardened 0755 - 0700
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -36,7 +36,7 @@ func (h *History) SaveHistory(chatHistory []*genai.Content) error {
 	}
 
 	// Hardened 0644 - 0600
-	file, err := os.OpenFile(h.HistoryPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
+	file, err := os.OpenFile(h.historyPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func (h *History) SaveHistory(chatHistory []*genai.Content) error {
 
 func (h *History) LoadHistory() ([]*genai.Content, error) {
 	var chatHistory []*genai.Content
-	file, err := os.Open(h.HistoryPath)
+	file, err := os.Open(h.historyPath)
 
 	if err != nil {
 		return nil, err
