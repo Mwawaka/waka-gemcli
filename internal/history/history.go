@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
-	"google.golang.org/genai"
 )
 
 type History struct {
@@ -27,7 +25,7 @@ func NewHistory() (*History, error) {
 	}, nil
 }
 
-func (h *History) SaveHistory(chatHistory []*genai.Content) error {
+func (h *History) SaveHistory(target any) error {
 	dir := filepath.Dir(h.historyPath)
 
 	// Hardened 0755 - 0700
@@ -44,26 +42,25 @@ func (h *History) SaveHistory(chatHistory []*genai.Content) error {
 
 	defer file.Close()
 
-	if err := json.NewEncoder(file).Encode(chatHistory); err != nil {
+	if err := json.NewEncoder(file).Encode(target); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (h *History) LoadHistory() ([]*genai.Content, error) {
-	var chatHistory []*genai.Content
+func (h *History) LoadHistory(target any) error {
 	file, err := os.Open(h.historyPath)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer file.Close()
 
-	if err := json.NewDecoder(file).Decode(&chatHistory); err != nil {
-		return nil, err
+	if err := json.NewDecoder(file).Decode(target); err != nil {
+		return err
 	}
 
-	return chatHistory, nil
+	return nil
 }

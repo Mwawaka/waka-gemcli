@@ -46,9 +46,7 @@ var (
 			}
 
 			if resume {
-				hist, err = hfg.LoadHistory()
-
-				if err != nil && !errors.Is(err, fs.ErrNotExist) {
+				if err := hfg.LoadHistory(&hist); err != nil && !errors.Is(err, fs.ErrNotExist) {
 					terminalUI.PrintError(err)
 					return
 				}
